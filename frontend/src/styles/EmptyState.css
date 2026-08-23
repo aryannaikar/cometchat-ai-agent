@@ -1,0 +1,127 @@
+.empty-state-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 24px;
+}
+
+.welcome-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  padding: 36px 32px;
+  max-width: 620px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.icon-wrapper {
+  background-color: #f1f5f9;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px auto;
+  color: #0f172a;
+}
+
+.welcome-card h2 {
+  font-size: 22px;
+  color: #0f172a;
+  margin-bottom: 12px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.welcome-text {
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-size: 14.5px;
+}
+
+.topics-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: left;
+  margin-bottom: 28px;
+}
+
+.topics-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.topics-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+@media (min-width: 540px) {
+  .topics-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.topics-list li {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.examples-section h3 {
+  font-size: 13px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .examples-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.example-btn {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: #334155;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.4;
+}
+
+.example-btn:hover {
+  background-color: #f8fafc;
+  border-color: #0f172a;
+  color: #0f172a;
+}
+
+.example-btn:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
