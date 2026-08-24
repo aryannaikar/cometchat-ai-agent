@@ -69,6 +69,52 @@
       }
     },
     {
+      "id": "custom-context-leakage-order-to-policy",
+      "category": "conversation",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Where is ORD-1005?"
+        },
+        {
+          "role": "user",
+          "content": "What does the company say about returns?"
+        }
+      ],
+      "expect": {
+        "must_include": [
+          "30",
+          "calendar days"
+        ],
+        "must_not_include": [
+          "ORD-1005",
+          "delayed"
+        ],
+        "handoff": false
+      }
+    },
+    {
+      "id": "custom-context-leakage-policy-to-order",
+      "category": "conversation",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the return window?"
+        },
+        {
+          "role": "user",
+          "content": "Where is ORD-1005?"
+        }
+      ],
+      "expect": {
+        "must_include": [
+          "FedEx"
+        ],
+        "tool": "order_lookup",
+        "handoff": false
+      }
+    },
+    {
       "id": "custom-warranty-non-authoritative",
       "category": "retrieval",
       "messages": [

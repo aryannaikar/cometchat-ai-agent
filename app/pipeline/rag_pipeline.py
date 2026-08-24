@@ -67,19 +67,12 @@ class RAGPipeline:
         # Detect order lookup intent
         from app.orders.lookup import extract_order_id, lookup_order
         
-        # Check if the query has order ID (directly or in history)
-        order_id = extract_order_id(resolved_question)
-        if not order_id and history:
-            # Check history messages (last 4)
-            for msg in history[-4:]:
-                order_id = extract_order_id(msg.get("text", ""))
-                if order_id:
-                    break
-
-        # Check if order-related query
+        # Check if the ORIGINAL query has order ID directly
+        order_id = extract_order_id(question)
+        
+        # Check if order-related query based on CURRENT question
         is_order_query = False
-        q_lower = resolved_question.lower()
-        order_keywords = ["order", "track", "status", "cancel", "arrive", "shipped", "delivered"]
+        q_lower = question.lower()
         order_track_patterns = [
             r"\bwhere\b.*\border\b",
             r"\btrack\b.*\border\b",
@@ -87,12 +80,23 @@ class RAGPipeline:
             r"\border\b.*\bstatus\b",
             r"\bwhen\b.*\border\b.*\barrive\b",
             r"\bcancel\b.*\border\b",
-            r"\border\b.*\bcancellation\b"
+            r"\border\b.*\bcancellation\b",
+            r"\bwhere\b.*\bis\b.*\bit\b",
+            r"\bwhen\b.*\barrive\b",
+            r"\bwhat\b.*\bstatus\b"
         ]
         has_track_pattern = any(re.search(pat, q_lower) for pat in order_track_patterns)
         
-        if order_id or has_track_pattern or q_lower.strip() == "where is my order" or q_lower.strip() == "track my order" or q_lower.strip().startswith("please check ord-"):
+        if order_id or has_track_pattern or q_lower.strip() in ["where is my order", "track my order", "where is it?", "when will it arrive?", "what is the status?"] or q_lower.strip().startswith("please check ord-"):
             is_order_query = True
+            
+        # If it's an order query but missing an ID, try to pull it from history
+        if is_order_query and not order_id and history:
+            # Check history messages (last 4) in reverse order to get the most recent ID
+            for msg in reversed(history[-4:]):
+                order_id = extract_order_id(msg.get("text", ""))
+                if order_id:
+                    break
 
         if is_order_query:
             from app.observability.trace import log_trace
@@ -105,14 +109,14 @@ class RAGPipeline:
                     history=history,
                     resolved_question=resolved_question,
                     final_response=ans,
-                    decision="abstain",
+                    decision="answer",
                     input_guard_decision=input_result.decision.value,
                     evidence_guard_decision="allow",
                     output_guard_decision="allow"
                 )
                 return PipelineResult(
                     answer=ans,
-                    decision="abstain",
+                    decision="answer",
                     citations=[],
                     input_guard_decision=input_result.decision.value,
                     evidence_guard_decision="allow",
@@ -211,37 +215,40 @@ class RAGPipeline:
             
             # Prepare safe prompt
             items_desc = ", ".join([f"{it['name']} (qty: {it['quantity']})" for it in order_data.get("items", [])])
+            
+            # Format estimated delivery date for natural language reading
+            est_del = order_data.get("estimated_delivery")
+            if est_del and isinstance(est_del, str) and len(est_del) == 10:
+                from datetime import datetime
+                try:
+                    est_del = datetime.strptime(est_del, "%Y-%m-%d").strftime("%B %d, %Y").replace(" 0", " ")
+                except:
+                    pass
+            elif not est_del:
+                est_del = "None"
+                
             prompt = f"""You are a customer-support assistant for Aster & Row.
 You just performed a secure lookup for order {order_id}.
 Here is the sanitized, safe order data:
 - Order ID: {order_data.get("order_id")}
 - Status: {order_data.get("status")}
 - Placed At: {order_data.get("placed_at")}
-- Membership Tier: {order_data.get("membership_tier")}
 - Items: {items_desc}
 - Shipped At: {order_data.get("shipped_at")}
 - Delivered At: {order_data.get("delivered_at")}
 - Carrier: {order_data.get("carrier")}
-- Tracking Number: {order_data.get("tracking_number")}
-- Estimated Delivery: {order_data.get("estimated_delivery")}
-- Customer Safe Message: {order_data.get("customer_safe_message")}
-- Cancellation Allowed: {order_data.get("cancellation_allowed")}
-- Address Change Allowed: {order_data.get("address_change_allowed")}
+- Estimated Delivery: {est_del}
 
 Use ONLY this order data to answer the customer's question. Do not invent any details.
+DO NOT dump the raw fields to the user. State the status conversationally.
 
 Instructions:
 1. If the status is 'cancelled', explain that the order is cancelled and will not ship. Do not mention any delivery date or tracking details even if they are in the query.
 2. If the status is 'returned', explain that the order has been returned. Do not mention any delivery date.
-3. If the status is 'shipped' but estimated_delivery is null or missing, state that it has shipped but a delivery estimate is currently unavailable. Do not invent or guess any delivery estimate.
+3. If the status is 'shipped', you MUST explicitly mention the carrier (e.g. UPS, FedEx) and the estimated delivery date in your response. If estimated_delivery is null, state that a delivery estimate is currently unavailable. Do not invent or guess any delivery estimate.
 4. If the status is 'exception', explain that the order has a shipping exception, support review is required, and recommend a human handoff.
-5. If the customer asks to cancel the order:
-   - Check the Cancellation Allowed field.
-   - If it is True, explain that the order is still pending and can be cancelled, but a human support specialist must complete the change.
-   - If it is False, explain that the order has entered processing/shipped/delivered and can no longer be cancelled.
-   - Never claim that the cancellation has been completed.
-6. Never mention customer emails, shipping addresses, internal risk scores, internal warehouse notes, or fraud review status.
-7. Keep the answer direct and concise.
+5. Never mention customer emails, shipping addresses, internal risk scores, internal warehouse notes, or fraud review status.
+6. Keep the answer direct and concise.
 
 Customer question:
 {question}
@@ -251,11 +258,6 @@ Answer:"""
                 ans = llm_client.generate(prompt).strip()
             except Exception as e:
                 ans = f"Error generating response: {str(e)}"
-                
-            # Post-process order answers for carrier presence (e.g. UPS)
-            if "ORD-1007" in question or (history and any("ORD-1007" in msg.get("text", "") for msg in history)):
-                if "ups" not in ans.lower():
-                    ans += " The shipment is handled by UPS."
                 
             # Perform clean checks
             # Output Guard for privacy check:

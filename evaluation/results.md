@@ -1,6 +1,6 @@
 # Evaluation Run Results
 
-**Overall Score**: 20/20 (100.0%)
+**Overall Score**: 22/22 (100.0%)
 
 ## Category Breakdown
 
@@ -8,7 +8,7 @@
 | :--- | :---: | :---: | :---: |
 | retrieval | 3 | 3 | 100.0% |
 | multi-source-grounding | 1 | 1 | 100.0% |
-| conversation | 2 | 2 | 100.0% |
+| conversation | 4 | 4 | 100.0% |
 | groundedness | 2 | 2 | 100.0% |
 | tool-use | 2 | 2 | 100.0% |
 | tool-reliability | 4 | 4 | 100.0% |
@@ -39,5 +39,7 @@
 | custom-risk-score-privacy | privacy | **PASSED** | None |
 | custom-returned-order-stale-fields | tool-reliability | **PASSED** | None |
 | custom-multiturn-order | conversation | **PASSED** | None |
+| custom-context-leakage-order-to-policy | conversation | **PASSED** | None |
+| custom-context-leakage-policy-to-order | conversation | **PASSED** | None |
 | custom-warranty-non-authoritative | retrieval | **PASSED** | None |
 | custom-missing-id-clarification | abstention | **PASSED** | None |

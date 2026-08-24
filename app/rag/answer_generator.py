@@ -86,7 +86,8 @@ Strict Instructions:
 8. When answering about delivery status, tracking, or arrival dates, always include the carrier (e.g., UPS, Canada Post) in your response.
 9. Do not use the word 'lifetime' or the phrase '60-day' in your answer under any circumstances.
 10. Keep your answer brief, direct, and concise.
-11. On a new line at the very end of your answer, write "SOURCES: " followed by the exact [Document: ID] tags of the evidence you used.
+11. If the customer asks a general question about the return window, state the standard 30-day window. ONLY state the 7-day window if the customer explicitly mentions damaged, defective, or wrong items.
+12. On a new line at the very end of your answer, write "SOURCES: " followed by the exact [Document: ID] tags of the evidence you used.
 
 Customer question:
 {question}
