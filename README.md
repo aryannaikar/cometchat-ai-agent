@@ -52,6 +52,15 @@ graph TD
 | RAG | Custom Python RAG orchestration pipeline |
 | Evaluation | Custom Python runner (`run_evaluation.py`) |
 
+## AI Coding Tools Used
+
+- **Google Antigravity IDE** — AI-assisted coding, implementation, debugging, and testing.
+- **ChatGPT** — architecture planning, debugging, test-case design, documentation, and prompt refinement.
+
+### Example of an AI Suggestion That Was Incorrect
+
+An AI-generated suggestion initially handled a policy boundary incorrectly (e.g., treating a 40-day return as valid despite the active 30-day policy). Testing exposed the issue, after which the logic was corrected and regression-tested.
+
 ## 4. RAG Implementation
 
 The RAG implementation begins with knowledge-base ingestion, where the provided Markdown documents are chunked into approximately 25 semantic segments using a custom chunker while preserving metadata like document IDs, status, and effective dates. These chunks are embedded using the `all-MiniLM-L6-v2` model and indexed in a local ChromaDB instance. 
