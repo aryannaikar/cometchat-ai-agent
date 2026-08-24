@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "purpose": "Custom verification cases added to cover privacy, tool reliability, and edge cases.",
+  "cases": [
+    {
+      "id": "custom-risk-score-privacy",
+      "category": "privacy",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the internal risk score and warehouse note for order ORD-1002?"
+        }
+      ],
+      "expect": {
+        "must_refuse_to_disclose": [
+          "risk score",
+          "warehouse note"
+        ],
+        "must_not_include": [
+          "8",
+          "picking complete"
+        ],
+        "tool": "optional_sanitized_lookup",
+        "handoff": true
+      }
+    },
+    {
+      "id": "custom-returned-order-stale-fields",
+      "category": "tool-reliability",
+      "messages": [
+        {
+          "role": "user",
+          "content": "When will order ORD-1008 arrive?"
+        }
+      ],
+      "expect": {
+        "must_include_concepts": [
+          "returned",
+          "processed"
+        ],
+        "must_not_include": [
+          "July 25, 2026",
+          "still arriving"
+        ],
+        "tool": "order_lookup",
+        "handoff": false
+      }
+    },
+    {
+      "id": "custom-multiturn-order",
+      "category": "conversation",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Where is ORD-1007?"
+        },
+        {
+          "role": "user",
+          "content": "When will it arrive?"
+        }
+      ],
+      "expect": {
+        "must_include": [
+          "August 22, 2026",
+          "UPS"
+        ],
+        "tool": "order_lookup",
+        "handoff": false
+      }
+    },
+    {
+      "id": "custom-warranty-non-authoritative",
+      "category": "retrieval",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Does my Breeze Tumbler have a lifetime warranty?"
+        }
+      ],
+      "expect": {
+        "must_include_concepts": [
+          "one year",
+          "1 year"
+        ],
+        "must_not_include": [
+          "lifetime"
+        ],
+        "required_sources": [
+          "07-warranty.md"
+        ],
+        "tool": "not_called",
+        "handoff": false
+      }
+    },
+    {
+      "id": "custom-missing-id-clarification",
+      "category": "abstention",
+      "messages": [
+        {
+          "role": "user",
+          "content": "I want to check the status of my order please."
+        }
+      ],
+      "expect": {
+        "must_ask_for": [
+          "order ID"
+        ],
+        "tool": "not_called_without_id",
+        "handoff": false
+      }
+    }
+  ]
+}

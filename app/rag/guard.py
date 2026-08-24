@@ -114,10 +114,18 @@ class EvidenceGuard:
                     break
                     
                 doc_words = set(re.findall(r"\b[a-z]{4,}\b", content))
-                overlap = question_words.intersection(doc_words)
+                # Check for substring matches (e.g. ship in ships/shipping) to allow stemming-like matching
+                has_overlap = False
+                for qw in question_words:
+                    for dw in doc_words:
+                        if qw in dw or dw in qw:
+                            has_overlap = True
+                            break
+                    if has_overlap:
+                        break
                 
                 # We require at least some semantic overlap to consider it relevant
-                if len(overlap) >= 1:
+                if has_overlap:
                     usable_evidence = True
                     break
 

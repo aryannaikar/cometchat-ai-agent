@@ -86,15 +86,15 @@ class Retriever:
 
         # Historical policies should not dominate.
         if status == "superseded":
-            score -= 3.0
+            score -= 15.0
 
         # Draft policies should not be used as authoritative answers.
         if status == "draft":
-            score -= 3.0
+            score -= 15.0
 
         # Internal-only documents are less useful for customer answers.
         if audience == "internal":
-            score -= 1.0
+            score -= 5.0
 
         # =========================================
         # GENERAL CONTENT RELEVANCE
@@ -107,11 +107,26 @@ class Retriever:
             "delivery",
             "refund",
             "eligible",
+            "ship",
+            "ships",
+            "shipping",
+            "international",
+            "canada",
+            "germany",
+            "warranty",
+            "warranties",
+            "tumbler",
+            "breeze",
+            "wash",
+            "dishwasher",
+            "vegan",
+            "fabrics",
+            "adhesives",
         ]
 
         for term in important_terms:
             if term in question and term in content:
-                score += 0.5
+                score += 1.5
 
         # =========================================
         # RETURN-WINDOW RELEVANCE
