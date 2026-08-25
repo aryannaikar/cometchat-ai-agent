@@ -215,4 +215,4 @@ The `QueryContextResolver` LLM was originally implemented to rewrite queries usi
 
 ## 15. Demo
 
-https://github.com/aryannaikar/cometchat-ai-agent/raw/main/demo.mp4
+[▶️ Watch Demo Video](https://github.com/aryannaikar/cometchat-ai-agent/blob/main/demo.mp4)
