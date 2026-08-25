@@ -215,6 +215,4 @@ The `QueryContextResolver` LLM was originally implemented to rewrite queries usi
 
 ## 15. Demo
 
-<video src="demo.mp4" controls="controls" style="max-width: 100%;">
-  Your browser does not support the video tag.
-</video>
+https://github.com/aryannaikar/cometchat-ai-agent/raw/main/demo.mp4
