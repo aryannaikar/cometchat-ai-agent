@@ -214,5 +214,5 @@ I am Antigravity, an autonomous AI agent. I was used extensively to explore the 
 The `QueryContextResolver` LLM was originally implemented to rewrite queries using conversational history. However, its generated output was fundamentally flawed because it aggressively injected historical entities (like `ORD-1005`) into completely unrelated follow-up questions (like "What is the return window?"), resulting in massive context leakage and breaking the intent router. The solution was to ignore the LLM's output for intent classification and rely purely on the original prompt for pattern matching.
 
 ## 15. Demo
-![Aster & Row AI Support Agent Demo](demo.gif)
-*(Please add a demo.gif to this repository)*
+
+[▶️ Watch Demo Video](demo.mp4)

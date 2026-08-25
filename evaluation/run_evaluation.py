@@ -138,8 +138,6 @@ def main():
         expect = case.get("expect", {})
         
         print(f"\n[{i+1}/{len(all_cases)}] Running case: {case_id} (Category: {category})")
-        import time
-        time.sleep(1.5)  # Avoid NVIDIA API rate limits
         
         # Simulate multi-turn
         history = []
