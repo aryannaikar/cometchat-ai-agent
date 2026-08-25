@@ -207,12 +207,15 @@ NVIDIA_API_KEY=your_nvidia_api_key_here
 * **Hardcoded Intent Patterns**: Order intent detection currently relies on Regex pattern matching (`\bwhen\b.*\barrive\b`). In a production setting, this should be replaced with a lightweight LLM classification step or an embedding-based intent classifier to handle more diverse linguistic variations.
 * **Vector Store Persistence**: ChromaDB is used in an ephemeral/in-memory configuration for the evaluation scripts. In production, this should be connected to a persistent ChromaDB instance to avoid re-embedding the markdown files on every startup.
 
-## 14. AI Development Tools
-I am Antigravity, an autonomous AI agent. I was used extensively to explore the repository, identify root causes of context leakage and specificity failures, run integration tests, and author python bug fixes for the RAG orchestration pipeline. 
+## 14. Demo
 
-**Example of an AI-generated suggestion that was wrong/incomplete:**
-The `QueryContextResolver` LLM was originally implemented to rewrite queries using conversational history. However, its generated output was fundamentally flawed because it aggressively injected historical entities (like `ORD-1005`) into completely unrelated follow-up questions (like "What is the return window?"), resulting in massive context leakage and breaking the intent router. The solution was to ignore the LLM's output for intent classification and rely purely on the original prompt for pattern matching.
+<video
+  src="https://github.com/aryannaikar/cometchat-ai-agent/blob/main/demo.mp4"
+  controls
+  muted
+  playsinline
+  width="700">
+</video>
 
-## 15. Demo
+https://github.com/user-attachments/assets/9e429eff-5376-4ff9-904f-97ee692f0359
 
-[▶️ Watch Demo Video](https://github.com/aryannaikar/cometchat-ai-agent/blob/main/demo.mp4)
